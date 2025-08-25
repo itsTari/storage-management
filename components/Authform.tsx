@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -7,22 +7,25 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import Link from "next/link";
 
 const formSchema = z.object({
   fullname: z
     .string()
     .min(2, { message: "Username must be at least 2 characters." }),
+  email: z.string()
 });
 type FormType = "sign-in" | "sign-up";
 
 const Authform = ({ type }: { type: FormType }) => {
+  const [loading, setLoading] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: { fullname: "" },
@@ -57,8 +60,27 @@ const Authform = ({ type }: { type: FormType }) => {
               )}
             />
           )}
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                  <div className="shad-form-item">
+                      <FormLabel className="shad-form-label">Email</FormLabel>
+                      <FormControl>
+                          <Input placeholder="Enter your email address" className="shad-input" {...field} />
+                      </FormControl>
+                  </div>
+                <FormMessage className="shad-form-message" />
+              </FormItem>
+            )}
+          />
 
-          <Button type="submit">Submit</Button>
+          <Button type="submit" className="form-submit-button text-white" disabled={loading}>{type ==='sign-in'? 'Sign In' :'sign up'} {loading && (<img src='/assets/icons/loader.svg' alt="loader" width={24} height={24} className="ml-2 animate-spin"/>)}</Button>
+            {errorMessage && (
+              <p className="error-message">*{errorMessage}</p>
+            )}
+            <div className="body-2 flex justify-center"><p className="text-light-100">{type === 'sign-in'? "Don't have an account?":"Already have account?"}</p> <Link href={type === 'sign-in'? '/sign-up':'/sign-in'} className="ml-1 font-medium text-brand">{type === 'sign-in'? 'Sign Up':'Sign In'}</Link></div>
         </form>
       </Form>
       {/* otp verification */}
