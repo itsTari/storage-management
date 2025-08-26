@@ -15,20 +15,28 @@ import {
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 
-const formSchema = z.object({
-  fullname: z
-    .string()
-    .min(2, { message: "Username must be at least 2 characters." }),
-  email: z.string()
-});
 type FormType = "sign-in" | "sign-up";
+
+const authFormSchema = (formType: FormType)=>{
+  return  z.object({
+  fullname: formType === 'sign-up'? z.string().min(2, { message: "Username must be at least 2 characters." }).max(50,{message:'Username must not be more than 50 characters'}) : z.string().optional(),
+  email: z.string().email()
+});
+}
+
 
 const Authform = ({ type }: { type: FormType }) => {
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
+
+  const formSchema = authFormSchema(type)
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { fullname: "" },
+    defaultValues: { 
+      fullname: "",
+      email:''
+    },
   });
 
   // 2. Define a submit handler.
