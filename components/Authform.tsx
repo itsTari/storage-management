@@ -14,6 +14,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
+import { createAccount } from "@/lib/actions/user.actions";
+import OTPModal from "./OTPModal";
 
 type FormType = "sign-in" | "sign-up";
 
@@ -28,6 +30,7 @@ const authFormSchema = (formType: FormType)=>{
 const Authform = ({ type }: { type: FormType }) => {
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
+  const [accountId, setAccountId] = useState(null)
 
   const formSchema = authFormSchema(type)
 
@@ -39,9 +42,18 @@ const Authform = ({ type }: { type: FormType }) => {
     },
   });
 
-  // 2. Define a submit handler.
+  // Define a submit handler.
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+    setLoading(true)
+    setErrorMessage('')
+    try {
+      const user = await createAccount({fullName:values.fullname || '', email:values.email})
+      setAccountId(user.accountId)
+    } catch (error) {
+      setErrorMessage('Failed to create an account please try again later')
+    }finally{
+      setLoading(false)
+    }
   };
 
   return (
@@ -92,6 +104,8 @@ const Authform = ({ type }: { type: FormType }) => {
         </form>
       </Form>
       {/* otp verification */}
+      {true && (<OTPModal email={form.getValues('email')} accountId={accountId}/> )}
+      
     </>
   );
 };

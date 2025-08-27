@@ -1,3 +1,4 @@
+'use server'
 // using node-appwrite sdk to make sure all of our services works on the server side
 import {Account, Avatars, Client, Databases, Storage} from 'node-appwrite'
 import { appwriteConfig } from './config'
