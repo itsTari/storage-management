@@ -23,7 +23,7 @@ const handleError = (error:unknown, message:string) =>{
     throw error
 }
 
-const sendEmailOTP = async ({email}:{email:string}) =>{
+export const sendEmailOTP = async ({email}:{email:string}) =>{
     const {account} = await createAdminClient()
     try {
         const session = await account.createEmailToken(ID.unique(), email)
@@ -34,8 +34,8 @@ const sendEmailOTP = async ({email}:{email:string}) =>{
 }
 export const createAccount = async ({fullName, email}: {fullName:string, email:string}) => {
   const existingUser = await getUserByEmail(email)
-  const accoundId = await sendEmailOTP({email})
-  if(!accoundId)throw new Error('Failed to send an OTP')
+  const accountId = await sendEmailOTP({email})
+  if(!accountId)throw new Error('Failed to send an OTP')
     if(!existingUser){
         const {databases} = await createAdminClient()
         await databases.createDocument(
@@ -46,12 +46,12 @@ export const createAccount = async ({fullName, email}: {fullName:string, email:s
               fullName,
               email,
               avatar:'https://png.pngtree.com/png-vector/20210604/ourmid/pngtree-gray-avatar-placeholder-png-image_3416697.jpg',
-              accoundId,
+              accountId,
             },
 
         )
     }
-    return parseStringify({accoundId})
+    return parseStringify({accountId})
 }
 
 export const verifySecret = async ({accountId, password}:{accountId:string, password:string}) => {

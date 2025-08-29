@@ -16,7 +16,7 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { Button } from "./ui/button";
-import { verifySecret } from "@/lib/actions/user.actions"
+import { verifySecret, sendEmailOTP } from "@/lib/actions/user.actions"
 import { useRouter } from "next/navigation";
 
 const OTPModal = ({email, accountId}:{email:string, accountId:string}) => {
@@ -31,16 +31,14 @@ const OTPModal = ({email, accountId}:{email:string, accountId:string}) => {
         try {
             //call api to verify otp
             const sessionId = await verifySecret({accountId, password})
-            if(sessionId) router.push('/')
-
-            
+            if(sessionId) router.push('/')   
         } catch (error) {
             console.log('failed to verify OTP', error)
         }
         setLoading(false)
     }
-    const handleResendOtp = async()=>{
-
+    const handleResendOtp = async ()=>{
+        await sendEmailOTP({email}) 
     }
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>

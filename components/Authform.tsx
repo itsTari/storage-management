@@ -30,7 +30,7 @@ const authFormSchema = (formType: FormType)=>{
 const Authform = ({ type }: { type: FormType }) => {
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
-  const [accountId, setAccountId] = useState('')
+  const [accountId, setAccountId] = useState(null)
 
   const formSchema = authFormSchema(type)
 
@@ -49,6 +49,7 @@ const Authform = ({ type }: { type: FormType }) => {
     try {
       const user = await createAccount({fullName:values.fullname || '', email:values.email})
       setAccountId(user.accountId)
+      console.log(user)
     } catch (error) {
       setErrorMessage('Failed to create an account please try again later')
     }finally{
@@ -104,7 +105,7 @@ const Authform = ({ type }: { type: FormType }) => {
         </form>
       </Form>
       {/* otp verification */}
-      {true && (<OTPModal email={form.getValues('email')} accountId={accountId}/> )}
+      {accountId && (<OTPModal email={form.getValues('email')} accountId={accountId}/> )}
       
     </>
   );
