@@ -44,7 +44,7 @@ const OTPModal = ({email, accountId}:{email:string, accountId:string}) => {
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogContent className="shad-alert-dialog">
         <AlertDialogHeader className="relative flex justify-center">
-          <AlertDialogTitle className="h2 text-center">Enter your OTP<img src="/assets/icons/close-dark.svg" alt="close" width={20} height={20} onClick={() =>setIsOpen(false)} className="otp-close-button"/></AlertDialogTitle>
+        <AlertDialogTitle className="h2 text-center">Enter your OTP<img src="/assets/icons/close-dark.svg" alt="close" width={20} height={20} onClick={() =>setIsOpen(false)} className="otp-close-button"/></AlertDialogTitle>
           <AlertDialogDescription className="subtitle-2 text-center text-light-100">
             An OTP has been sent to <span className="pl-1 text-brand">{email}</span>
           </AlertDialogDescription>
