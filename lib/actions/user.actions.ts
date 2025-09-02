@@ -7,12 +7,13 @@
 // 6. return user account id
 // 7. verify otp to authenticate the log in
 'use server'
-import { ID, Query } from "node-appwrite"
+import { Browser, ID, Query } from "node-appwrite"
 import { createAdminClient, createSessionClient } from "../appwrite"
 import { appwriteConfig } from "../appwrite/config"
 import { parseStringify } from "../utils"
 import { cookies } from "next/headers"
 import { avatarPlaceholderUrl } from "@/constants"
+import { redirect } from "next/navigation"
 
 const getUserByEmail = async (email:string)=>{
     const {databases} = await createAdminClient()
@@ -74,4 +75,25 @@ export const getCurrentUser = async() =>{
     if(user.total <= 0) return null
     return parseStringify(user.documents[0])
 }
+export const logoutUser = async () =>{
+   const {account} = await createSessionClient()
+    try {
+        const session = await account.deleteSession('current')
+        const cookieStore = await cookies()
+        cookieStore.delete('appwrite-session')
+        if(session) redirect('/sign-in')
+    } catch (error) {
+        handleError(error,'Error logging out user')
+    }
+
+}
+// export const userAvatars = async ()=>{
+//     const {avatars} = await createSessionClient()
+//     try {
+//         const avatarUrl = await avatars.getInitials('current', 100, 100, 'ffffff')
+//         return avatarUrl
+//     } catch (error) {
+//         handleError(error,'failed to load')
+//     }
+// }
 

@@ -19,7 +19,7 @@ export const createSessionClient = async () => {
             },
             get databases(){
                 return new Databases(client)
-            }
+            },
         }
 }
 export const createAdminClient = async () => {

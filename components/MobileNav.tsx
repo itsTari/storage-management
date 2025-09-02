@@ -14,6 +14,8 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import FileUploader from "./FileUploader";
+import { Button } from "./ui/button";
+import { logoutUser } from "@/lib/actions/user.actions";
 
 interface Props{
   avatar:string,
@@ -25,6 +27,9 @@ interface Props{
 const MobileNav = ({avatar, fullName, email, ownerId, accountId} : Props) => {
   const [open, setOpen] = useState(false)
   const pathname = usePathname()
+  const handleLogout = async ()=>{
+      await logoutUser()
+  }
   return (
     <header className="mobile-header">
       <img src="/assets/icons/logo-full-brand.svg" width={120} height={52} className="h-auto"/>
@@ -58,6 +63,10 @@ const MobileNav = ({avatar, fullName, email, ownerId, accountId} : Props) => {
             <Separator className="my-5 bg-light-200/20"/>
             <div className="flex flex-col justify-between gap-5 pb-5">
                   <FileUploader/>
+                  <Button type="submit" className="mobile-sign-out-button" onClick={handleLogout}>
+                    <img src='/assets/icons/logout.svg' alt="logout" width={24} height={24}/>
+                    <p>Logout</p>
+                  </Button>
             </div>
         </SheetContent>
       </Sheet>
