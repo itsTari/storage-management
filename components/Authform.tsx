@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import { createAccount } from "@/lib/actions/user.actions";
+import { createAccount, signInUser } from "@/lib/actions/user.actions";
 import OTPModal from "./OTPModal";
 
 type FormType = "sign-in" | "sign-up";
@@ -47,7 +47,7 @@ const Authform = ({ type }: { type: FormType }) => {
     setLoading(true)
     setErrorMessage('')
     try {
-      const user = await createAccount({fullName:values.fullname || '', email:values.email})
+      const user = type === 'sign-up' ?  await createAccount({fullName:values.fullname || '', email:values.email}) : await signInUser({email:values.email})
       setAccountId(user.accountId)
       console.log(user)
     } catch (error) {

@@ -14,6 +14,7 @@ import { parseStringify } from "../utils"
 import { cookies } from "next/headers"
 import { avatarPlaceholderUrl } from "@/constants"
 import { redirect } from "next/navigation"
+import { error } from "console"
 
 const getUserByEmail = async (email:string)=>{
     const {databases} = await createAdminClient()
@@ -87,6 +88,19 @@ export const logoutUser = async () =>{
     }
 
 }
+export const  signInUser = async ({email}:{email:string})=> {
+    try {
+        const existingUser = await getUserByEmail(email)
+        if(existingUser){
+            await sendEmailOTP({email})
+            return parseStringify({accountId: existingUser.accountId})
+        }
+        return parseStringify({accountId: null, error:'user not found'})
+    } catch (error) {
+        handleError(error, 'Error signing in:');
+    }
+}
+
 // export const userAvatars = async ()=>{
 //     const {avatars} = await createSessionClient()
 //     try {
